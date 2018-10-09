@@ -7,37 +7,36 @@ describe ChangeSecretDiary do
 
   it "Check for Lock Method" do
     s = ChangeSecretDiary.new
-    s.lock
-    expect(s.diarystate).to eq(false)
+    expect(s.p.lock).to eq(false)
   end
 
   it "Check for unlock Method" do
     s = ChangeSecretDiary.new
-    s.unlock
-    expect(s.diarystate).to eq(true)
+    expect(s.p.unlock).to eq(true)
   end
 
   describe "#add_entry" do
     it "Invoking without unlocking with throw error" do
-      expect{subject.add_entry("hello diary")}.to raise_error("Diary locked") if subject.diarystate == false
+      s = ChangeSecretDiary.new
+      expect{s.add_entry("hello diary")}.to raise_error("Diary locked") if(!@diarystate)
     end
 
     it "Invoking after unlocking displays success message" do
-      subject.unlock
-      expect(subject.add_entry("hello diary")).to eq "Entry 'hello diary' added successfully"
+      s = ChangeSecretDiary.new
+      s.diarystate = s.p.unlock
+      expect(s.add_entry("hello diary")).to eq "Entry 'hello diary' added successfully"
     end
   end
 
   describe "#get_entries" do
     it "Getting entries without unlocking throws error" do
-      expect{subject.get_entries}.to raise_error("Diary locked") if subject.diarystate == false
+      s = ChangeSecretDiary.new
+      expect{s.get_entries}.to raise_error("Diary locked") if(!@diarystate)
     end
     it "Getting entries work after unlocking" do
-      subject.unlock
-      expect(subject.get_entries).to eq subject.diarycontents
+      s = ChangeSecretDiary.new
+      s.diarystate = s.p.unlock
+      expect(s.get_entries).to eq s.diarycontents
     end
-
-
   end
-
 end
